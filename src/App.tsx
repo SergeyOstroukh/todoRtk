@@ -10,7 +10,7 @@ function App() {
 
 
     useEffect(() => {
-        dispatch(todolistThunk.getTodo())
+        dispatch(todolistThunk.setTodo())
     }, [])
 
 

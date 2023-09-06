@@ -13,7 +13,7 @@ export const todoSlice = createSlice({
     reducers: {},
     extraReducers(builder) {
         builder
-            .addCase(getTodo.fulfilled, (state, action) => {
+            .addCase(setTodo.fulfilled, (state, action) => {
                 return action.payload.todolists.map(el=> ({...el, filter:'all'}))
             })
             .addCase(addTodo.fulfilled,(state, action)=>{
@@ -23,7 +23,7 @@ export const todoSlice = createSlice({
 
 })
 
-export const getTodo = createAppAsyncThunk<{ todolists: todoResponseType[] }>('todolist/get', async (_, thunkAPI) => {
+const setTodo = createAppAsyncThunk<{ todolists: todoResponseType[] }>('todolist/get', async (_, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     try {
         const res = await todoApi.getTodolists()
@@ -34,13 +34,15 @@ export const getTodo = createAppAsyncThunk<{ todolists: todoResponseType[] }>('t
     }
 })
 
-export const addTodo = createAppAsyncThunk<any,any>('todolist/add',async (arg, thunkAPI)=>{
+const addTodo = createAppAsyncThunk<{todolist:todoResponseType},string >('todolist/add',async (title:string, thunkAPI)=>{
     const {dispatch,rejectWithValue} = thunkAPI
     try {
-        const res = await todoApi.addTodo(arg)
+        const res = await todoApi.addTodo(title)
         if(res.data.resultCode===0){
             const todolist = res.data.data.item
             return {todolist}
+        }else {
+            return rejectWithValue(null)
         }
     }catch (e){
         return rejectWithValue(null)
@@ -49,4 +51,4 @@ export const addTodo = createAppAsyncThunk<any,any>('todolist/add',async (arg, t
 
 export const todolistReducer = todoSlice.reducer
 export const todolistAction = todoSlice.actions
-export const todolistThunk = {getTodo,addTodo}
+export const todolistThunk = {setTodo,addTodo}

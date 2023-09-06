@@ -18,6 +18,7 @@ export const Todolists = () => {
                     <TodoCard
                         title={td.title}
                         filter={td.filter}
+                        todolistId={td.id}
                     />
                 )
             })}
